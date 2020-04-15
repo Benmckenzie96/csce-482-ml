@@ -84,9 +84,9 @@ def __org_get_vectors(names, descs):
             followed by 'get_descs' on the returned result.
 
     Returns:
-        A python dictionary. Each key in the dictionary is
-        an organization name, each value in the dictionary is
-        the corresponding organization description.
+        A python dictionary:
+            "name": organization name
+            "desc": organization description.
     """
     combinedData = {}
     for i in range(len(names)):
@@ -104,16 +104,32 @@ def org_json_to_dictionary(filename):
             json data you wish to convert to a dictionary.
 
     Returns:
-        A python dictionary. Each key in the dictionary is
-        an organization name, each value in the dictionary is
-        the corresponding organization description.
+        A python dictionary:
+            "name": organization name
+            "desc": organization description.
     """
     data = __org_import_data(filename)
     names = __org_get_names(data)
     descs = __org_get_descs(data)
     return __org_get_vectors(names, descs)
 
-# Example use case:
-if __name__ == '__main__':
-    dict = org_json_to_dictionary("../data/org_data.json")
-    print(dict)
+def org_json_to_list(data_dict):
+    """This function converts json data following the
+    schema specified at the top of this file into a
+    list. Each entry in the list is the concatenation of
+    organization name and description.
+
+    Args:
+        data_dict (dictionary): dictionary containing
+            organizational data. This dictionary can
+            be obtained by calling 'org_json_to_dictionary'
+
+    Returns:
+        A python list containing each organization's name
+            concatenated with its description.
+    """
+    data_list = []
+    for k, v in data_dict.items():
+        s = k + ' ' + v
+        data_list.append(s)
+    return data_list

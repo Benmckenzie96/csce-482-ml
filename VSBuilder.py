@@ -1,38 +1,48 @@
+"""
+Created By: Cameron Przybylski
+
+Creation Date: March 25, 2020
+
+Purpose: This file contains functionality to create a
+    vector space. The sklearn library is the primary
+    driver of the functionality contained here.
+"""
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
-from scipy.spatial.distance import cdist 
+from scipy.spatial.distance import cdist
 import pandas as pd
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from orgdata_json_utils import org_json_to_dictionary
 
 
 def import_data(filename):
     f = open(filename)
     jsonFile = json.load(f)
-    return jsonFile 
+    return jsonFile
 
 def get_names(jsonData):
     data = []
     for i in jsonData:
         data.append(i["name"])
-    return data        
+    return data
 
 def get_descs(jsonData):
     data = []
     for i in jsonData:
         data.append(i["desc"])
-    return data 
+    return data
 
 def get_vectors(names, descs):
     combinedData = {}
     for i in range(len(names)):
         combinedData[names[i]] = descs[i]
-    return combinedData    
+    return combinedData
 
 def bag_of_words(vector):
     newVector = vector.split()
@@ -42,7 +52,7 @@ def bag_of_words(vector):
             dct[i] = dct[i] + 1
         else:
             dct[i] = 1
-    return dct            
+    return dct
 
 
 def data_to_list(dct):
@@ -50,7 +60,7 @@ def data_to_list(dct):
     for key in dct.keys():
         tempStr = key + dct[key]
         doc.append(tempStr)
-    return doc    
+    return doc
 
 def build_vector_space(combinedData):
     documents = data_to_list(combinedData)
@@ -64,25 +74,25 @@ def k_means(matrix, vectorizer, k, show):
     km.fit(matrix)
     order_centroids = km.cluster_centers_.argsort()[:, ::-1]
     terms = vectorizer.get_feature_names()
-    
+
     if show == "print":
         for i in range(k):
             print("Cluster %d:" % i, end='')
             for ind in order_centroids[i, :10]:
                 print(' %s' % terms[ind], end='')
             print()
-    return km    
-    
+    return km
+
 
 def elbow_method(matrix, vectorizer):
     sumOfSquareDistances = []
     distortions = []
-    K = range(1,20)
+    K = range(1,3)
     for k in K:
         km = KMeans(n_clusters=k).fit(matrix)
         km = km.fit(matrix)
         sumOfSquareDistances.append(km.inertia_)
-        #distortions.append(sum(np.min(cdist(matrix, km.cluster_centers_, 'euclidean'),axis=1)) / matrix.shape[0]) 
+        #distortions.append(sum(np.min(cdist(matrix, km.cluster_centers_, 'euclidean'),axis=1)) / matrix.shape[0])
     #print(sumOfSquareDistances)
     plt.plot(K, sumOfSquareDistances)
     plt.xlabel('k')
@@ -97,7 +107,7 @@ def get_random_recommedations(data, n):
     for i in range(n):
         recommendation = random.choice(list(data.keys()))
         recommendations.append(recommendation)
-    return recommendations    
+    return recommendations
 
 def closest_docs(combinedData, words, n):
     documents = data_to_list(combinedData)
@@ -109,7 +119,7 @@ def closest_docs(combinedData, words, n):
     inputIndex = documents.index(words)
 
     vals = cosine_similarity(docMatrix)
-    np.fill_diagonal(vals, np.nan) 
+    np.fill_diagonal(vals, np.nan)
 
     results = []
     #tempVals = []
@@ -121,11 +131,11 @@ def closest_docs(combinedData, words, n):
         inputIndex = documents.index(words)
         #vals = cosine_similarity(docMatrix)
         #np.fill_diagonal(vals, np.nan)
-        resultIndex = np.nanargmax(vals[inputIndex])   
+        resultIndex = np.nanargmax(vals[inputIndex])
         results.append(documents[resultIndex])
-        np.delete(vals, resultIndex)     
-        #print("Working")                                                                                                                                                                                                      
-    
+        np.delete(vals, resultIndex)
+        #print("Working")
+
     #return results
     #resultIndex = np.nanargmax(vals[inputIndex])
     return results #documents[resultIndex]
@@ -136,17 +146,17 @@ def closest_docs(combinedData, words, n):
 
 
 if __name__ == "__main__":
-    jsonData = import_data("org_data.json")
-    names = get_names(jsonData)
-    descriptions = get_descs(jsonData)
-    combinedData = get_vectors(names, descriptions)
-    docMatrix, vectorizer = build_vector_space(combinedData)
-    #k_means(docMatrix, vectorizer, 5, "print")
-    elbow_method(docMatrix, vectorizer)
-    #recommendations = get_random_recommedations(combinedData, 10)
-    #print(recommendations)
-    #words = "Computer Science and Engineering"
-    #docs = closest_docs(combinedData, words, 5)
-    #print(docs)
-
-
+    data = org_json_to_dictionary('org_data.json')
+    print(data_to_list(data)[0])
+    # data = org_json_to_dictionary("org_data.json")
+    # names = get_names(jsonData)
+    # descriptions = get_descs(jsonData)
+    # combinedData = get_vectors(names, descriptions)
+    # docMatrix, vectorizer = build_vector_space(combinedData)
+    # #k_means(docMatrix, vectorizer, 5, "print")
+    # elbow_method(docMatrix, vectorizer)
+    # #recommendations = get_random_recommedations(combinedData, 10)
+    # #print(recommendations)
+    # #words = "Computer Science and Engineering"
+    # #docs = closest_docs(combinedData, words, 5)
+    # #print(docs)
