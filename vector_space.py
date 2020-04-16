@@ -11,7 +11,6 @@ Purpose: Define a class that contains vector space
 """
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from orgdata_json_utils import org_json_to_list
 import numpy as np
 
 class VectorSpace:

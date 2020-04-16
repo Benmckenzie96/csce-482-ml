@@ -1,4 +1,15 @@
 class Org:
+    """This class defines an Org object.
+
+    Attributes:
+        org_id (str): The id of the org from google cloud
+            datastore.
+        org_name (str): The name of the org from google cloud
+            datastore.
+        org_purpose (str): The name concatenated with the purpose
+            of the organization. The reason the values are concatenated
+            is that some orgs have not purposes listed.
+    """
 
     def __init__(self, org_id, org_name, org_purpose):
         """Initializes an Org instance.

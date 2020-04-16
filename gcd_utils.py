@@ -3,6 +3,13 @@ from org import Org
 from org_dataset import OrgDataset
 
 def get_org_dataset():
+    """Fetches organizational data from google cloud
+    datastore and creates an OrgDataset instance containing
+    the data fetched.
+
+    Returns:
+        An OrgDataset instance containg the data fetched.
+    """
     GOOGLE_APPLICATION_CREDENTIALS = '/Users/benmckenzie/programming-workspace/482-keys/local-cred.json'
     client = datastore.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     query = client.query(kind='organization')
