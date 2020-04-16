@@ -13,13 +13,17 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
+from keras.utils import plot_model
 import pandas as pd
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import os
+import tensorflow
 from orgdata_json_utils import org_json_to_dictionary
 
+os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 def import_data(filename):
     f = open(filename)
@@ -146,13 +150,15 @@ def closest_docs(combinedData, words, n):
 
 
 if __name__ == "__main__":
-    data = org_json_to_dictionary('org_data.json')
-    print(data_to_list(data)[0])
-    # data = org_json_to_dictionary("org_data.json")
-    # names = get_names(jsonData)
-    # descriptions = get_descs(jsonData)
-    # combinedData = get_vectors(names, descriptions)
-    # docMatrix, vectorizer = build_vector_space(combinedData)
+    #data = org_json_to_dictionary('org_data.json')
+    #print(data_to_list(data)[0])
+    #data = org_json_to_dictionary("org_data.json")
+    data = import_data("org_data.json")
+    names = get_names(data)
+    descriptions = get_descs(data)
+    combinedData = get_vectors(names, descriptions)
+    docMatrix, vectorizer = build_vector_space(combinedData)
+    plot_model(docMatrix, to_file='model.png')
     # #k_means(docMatrix, vectorizer, 5, "print")
     # elbow_method(docMatrix, vectorizer)
     # #recommendations = get_random_recommedations(combinedData, 10)
