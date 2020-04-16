@@ -22,9 +22,7 @@ class VectorSpace:
         the data provided by 'data' argument.
 
         Args:
-            data (dictionary): a dictionary containing organizational
-                data. The keys for this dictionary should be organization names,
-                and the values should be the corresponding descriptions.
+            data (OrgDataset): an object of type OrgDataset
             analyzer (str, {‘word’, ‘char’, ‘char_wb’}): Whether the
                 feature should be made of word or character n-grams.
                 Option ‘char_wb’ creates character n-grams only from
@@ -67,8 +65,8 @@ class VectorSpace:
         self.max_features = max_features
         self.vectorizer = TfidfVectorizer(analyzer=analyzer, stop_words=stop_words,
             ngram_range=ngram_range, max_df=max_df, min_df=min_df, max_features=max_features)\
-            .fit(org_json_to_list(self.data))
-        self._transformed_data = self.vectorizer.transform(org_json_to_list(self.data))
+            .fit(self.data.get_org_descriptions())
+        self._transformed_data = self.vectorizer.transform(self.data.get_org_descriptions())
 
     def info(self):
         """Returns a string containing the information of
@@ -132,56 +130,13 @@ class VectorSpace:
             k (int): The number of closest orgs to fetch.
 
         Returns:
-            A python list containing the organization keys
-                that are closest to input_org in terms of
-                cosine cosine similarity
+            A pandas dataframe with three columns:
+                'orgId'
+                'orgName'
+                'orgPurpose'
         """
         sims = cosine_similarity(input_vector, self._transformed_data)[0]
         indices = np.argpartition(sims, -(k))[-(k):]
         input_index = np.argpartition(sims, -1)[-1:]
         indices = list(indices)
-        dict_keys = []
-        for index in indices:
-            key = list(self.data.keys())[index]
-            dict_keys.append(key)
-        return dict_keys
-
-    # def get_nearest_orgs(self, input_org, k=1):
-    #     """Gets the nearest organizations stored in
-    #     instance's data attribute. The keys containing
-    #     the organization names are returned.
-    #
-    #     Args:
-    #         input_org (list of dimension [[1]]): A list
-    #             containing a single string. The string is
-    #             the organization you wish to fetch nearest
-    #             neighbors for.
-    #         k (int): The number of closest orgs to fetch.
-    #
-    #     Returns:
-    #         A python list containing the organization keys
-    #             that are closest to input_org in terms of
-    #             cosine cosine similarity
-    #     """
-    #     if len(input_org) != 1:
-    #         raise ValueError('Currently only single orgs'
-    #          ' are supported as input.')
-    #     print(input_org)
-    #     print('\n')
-    #     vectorized_org = self.transform(input_org)
-    #     sims = cosine_similarity(vectorized_org, self._transformed_data)[0]
-    #     # add 1 to k to factor in self sim of input.
-    #     indices = np.argpartition(sims, -(k + 1))[-(k + 1):]
-    #     # This code is to remove the organization
-    #     # itself from consideration. input_org will
-    #     # always be most similar to itself.
-    #     input_index = np.argpartition(sims, -1)[-1:]
-    #     indices = list(indices)
-    #     indices.remove(input_index[0])
-    #     dict_keys = []
-    #     for index in indices:
-    #         key = list(self.data.keys())[index]
-    #         dict_keys.append(key)
-    #         print(self.data[key])
-    #         print('\n')
-    #     return dict_keys
+        return self.data.get_orgs_by_indices(indices)
