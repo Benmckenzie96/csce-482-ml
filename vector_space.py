@@ -12,6 +12,7 @@ Purpose: Define a class that contains vector space
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import pickle
 
 class VectorSpace:
 
@@ -139,3 +140,28 @@ class VectorSpace:
         input_index = np.argpartition(sims, -1)[-1:]
         indices = list(indices)
         return self.data.get_orgs_by_indices(indices)
+
+    def save_instance(self, destination):
+        """Saves instance of VectorSpace to the specified
+        destination as a pickle file.
+
+        Args:
+            destination (str): The location to save the
+                VectorSpace instance to.
+        """
+        with open(destination, 'wb') as f:
+            pickle.dump(self, f)
+
+    def load_instance(location):
+        """Static method to load a VectorSpace instance.
+        The instance must be loaded from a pickle file.
+
+        Args:
+            location (str): the location of the VectorSpace
+                instance to load.
+
+        Returns:
+            The VectorSpace instance located in location.
+        """
+        with open(location, 'rb') as f:
+            return pickle.load(f)

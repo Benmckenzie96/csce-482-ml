@@ -7,6 +7,6 @@ test_org1 = dataset.get_orgs_by_indices([0])
 test_org2 = dataset.get_orgs_by_indices([37])
 test = test_org1['orgPurpose'].to_numpy()[0] + test_org2['orgPurpose'].to_numpy()[0]
 print(test)
-vs = VectorSpace(dataset)
+vs = VectorSpace.load_instance('./org_vector_space.pkl')
 test_org_vec = vs.transform([test])
 print(vs.get_nearest_orgs(test_org_vec, 2))
