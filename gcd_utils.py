@@ -3,7 +3,7 @@ from org import Org
 from org_dataset import OrgDataset
 
 def get_org_dataset():
-    GOOGLE_APPLICATION_CREDENTIALS = './local-aggieorgs-backend.json'
+    GOOGLE_APPLICATION_CREDENTIALS = '/Users/benmckenzie/programming-workspace/482-keys/local-cred.json'
     client = datastore.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     query = client.query(kind='organization')
     results = list(query.fetch())
