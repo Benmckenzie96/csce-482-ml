@@ -37,13 +37,6 @@ class OrgDataset:
         new_orgs = pd.DataFrame(data=data, columns=self.attributes)
         self.dataframe = pd.concat([self.dataframe, new_orgs])
 
-    def get_org_descriptions(self):
-        """Returns a numpy array of strings. Each entry
-        is an 'Org' description. The description consists of
-        the 'Org' name concatenated with the 'Org' purpose.
-        """
-        return self.dataframe['orgPurpose'].to_numpy()
-
     def get_orgs_by_indices(self, indices):
         """Returns the rows of the dataframe with
         indices equal to the supplied indices.
@@ -57,6 +50,51 @@ class OrgDataset:
             dataframe are returned.
         """
         return self.dataframe.iloc[indices]
+
+    def get_org_descriptions(self, indices=None):
+        """
+        Args:
+            indices (list): an optional list of integers
+                representing which rows of the orgs dataframe
+                should have descriptions returned. If no value is
+                provided, all org descriptions are returned.
+
+        Returns:
+            a numpy array of strings. Each entry
+            is an 'Org' description. The description consists of
+            the 'Org' name concatenated with the 'Org' purpose.
+        """
+        if indices is not None:
+            df = self.get_orgs_by_indices(indices)
+        else:
+            df = self.dataframe
+        return df['orgPurpose'].to_numpy()
+
+    def get_orgs_by_id(self, ids, only_desc=False):
+        """Gets the rows of the database dataframe with
+        orgId equal to the supplied values.
+
+        Args:
+            ids (list): a list (or np array) of strings
+                where each entry is an organization id.
+            only_desc (bool, optional): defaults to False.
+                if set to True, rather than dataframe rows
+                being returned, only a list containing each
+                organization's description will be returned.
+
+        Returns:
+            One of the following depending on the value for
+            only_desc:
+                False: a dataframe containing the orgs with ids
+                    equal to ids.
+                True: an array containing only the organizations'
+                    description strings.
+        """
+        df = self.dataframe.loc[self.dataframe['orgId'].isin(ids)]
+        if only_desc:
+            return df['orgPurpose'].to_numpy()
+        else:
+            return df
 
     def save_instance(self, destination):
         """Saves OrgDataset instance to a pickle file
