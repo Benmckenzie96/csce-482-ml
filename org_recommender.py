@@ -51,4 +51,4 @@ class OrgRecommender:
         centroid = np.mean(org_vecs, axis=0)
         num_to_fetch = num_orgs + num_to_drop
         df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
-        return df.loc[~df['orgId'].isin(liked_orgs)]#['orgId'].to_numpy()
+        return df.loc[~df['orgId'].isin(liked_orgs)]['orgId'].to_numpy()
