@@ -20,11 +20,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import os
-import tensorflow
 from orgdata_json_utils import org_json_to_dictionary
-
-os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
-
+#sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.6.0-cp34-cp34m-linux_x86_64.whl
 def import_data(filename):
     f = open(filename)
     jsonFile = json.load(f)
