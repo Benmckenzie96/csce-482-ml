@@ -1,0 +1,3 @@
+runtime: python37
+service: org-recommender
+entrypoint: gunicorn api:app -w 1 -k uvicorn.workers.UvicornWorker
