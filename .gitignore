@@ -139,3 +139,6 @@ dmypy.json
 
 # keys
 local-cred.json
+
+#misc
+scratch.py

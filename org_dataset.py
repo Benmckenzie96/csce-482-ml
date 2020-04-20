@@ -1,6 +1,7 @@
 import pandas as pd
 from org import Org
 import pickle
+import numpy as np
 
 class OrgDataset:
     """This class contains functionality to create
@@ -69,6 +70,21 @@ class OrgDataset:
         else:
             df = self.dataframe
         return df['orgPurpose'].to_numpy()
+
+    def get_random_org_ids(self, num):
+        """Fetches random org descriptions from the
+        dataset.
+
+        Args:
+            num (int): The number of random org ids to
+                fetch.
+
+        Returns:
+            a numpy array of strings containing the random
+            org ids.
+        """
+        indices = np.random.randint(0, self.dataframe.shape[0], num)
+        return self.get_orgs_by_indices(indices)['orgId'].to_numpy()
 
     def get_orgs_by_id(self, ids, only_desc=False):
         """Gets the rows of the database dataframe with

@@ -24,10 +24,6 @@ class OrgRecommender:
         self.dataset = org_dataset
         self.vs = org_vector_space
 
-## TODO: Currently dataframe is returned instead of just
-# org ids. This is an intentional action for the purposes of
-# evaluating results for debugging. remove '#' in return
-# line to have correct functionality
     def recommend_orgs(self, user_id, num_orgs):
         """Uses vs attribute to provide recommended orgs
         based off of the user's liked orgs. Orgs are recommended
@@ -39,16 +35,22 @@ class OrgRecommender:
                 generate recommendations for.
             num_orgs (int): the number of new orgs to
                 recommend.
+            random_org_count (int, optional): In the case that
+                the supplied user doesn't have any liked orgs,
+                this is the number of random orgs that will be used
+                to provide recommendations.
 
         Returns:
             A list of organization ids. These are the ids of the
             recommended orgs for the user.
         """
         liked_orgs = get_account_liked_orgs(user_id)
+        if len(liked_orgs) == 0:
+            return self.dataset.get_random_org_ids(num_orgs)
         org_descs = self.dataset.get_orgs_by_id(liked_orgs, only_desc=True)
         num_to_drop = len(org_descs)
         org_vecs = self.vs.transform(org_descs)
         centroid = np.mean(org_vecs, axis=0)
         num_to_fetch = num_orgs + num_to_drop
         df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
-        return df.loc[~df['orgId'].isin(liked_orgs)]#['orgId'].to_numpy()
+        return df.loc[~df['orgId'].isin(liked_orgs)]['orgId'].to_numpy()
