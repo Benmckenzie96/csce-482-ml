@@ -2,8 +2,7 @@ from google.cloud import datastore
 from org import Org
 from org_dataset import OrgDataset
 
-GOOGLE_APPLICATION_CREDENTIALS = '/Users/benmckenzie/programming-workspace/482-keys/local-cred.json'
-client = datastore.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
+client = datastore.Client()
 
 def get_org_dataset():
     """Fetches organizational data from google cloud
