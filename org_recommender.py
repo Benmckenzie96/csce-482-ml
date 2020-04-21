@@ -61,8 +61,8 @@ class OrgRecommender:
             num_to_fetch = num_orgs + num_to_drop
             df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
             df = df.loc[~df['orgId'].isin(liked_orgs)]
-            return df.loc[~df['orgId'].isin(disliked_orgs)]#['orgId'].to_numpy()
+            return df.loc[~df['orgId'].isin(disliked_orgs)]['orgId'].to_numpy()
         else:
             num_to_fetch = num_orgs + num_to_drop
             df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
-            return df.loc[~df['orgId'].isin(liked_orgs)]#['orgId'].to_numpy()
+            return df.loc[~df['orgId'].isin(liked_orgs)]['orgId'].to_numpy()
