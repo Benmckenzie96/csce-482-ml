@@ -13,13 +13,14 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
-from keras.utils import plot_model
+#from keras.utils import plot_model
 import pandas as pd
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import os
+import csv
 from orgdata_json_utils import org_json_to_dictionary
 #sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.6.0-cp34-cp34m-linux_x86_64.whl
 def import_data(filename):
@@ -154,8 +155,9 @@ if __name__ == "__main__":
     names = get_names(data)
     descriptions = get_descs(data)
     combinedData = get_vectors(names, descriptions)
+    print(combinedData)
     docMatrix, vectorizer = build_vector_space(combinedData)
-    plot_model(docMatrix, to_file='model.png')
+    #plot_model(docMatrix, to_file='model.png')
     # #k_means(docMatrix, vectorizer, 5, "print")
     # elbow_method(docMatrix, vectorizer)
     # #recommendations = get_random_recommedations(combinedData, 10)
