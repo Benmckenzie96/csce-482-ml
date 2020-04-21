@@ -1,4 +1,4 @@
-from gcd_utils import get_account_liked_orgs
+from gcd_utils import get_account_liked_orgs, get_account_disliked_orgs
 import numpy as np
 
 class OrgRecommender:
@@ -45,12 +45,24 @@ class OrgRecommender:
             recommended orgs for the user.
         """
         liked_orgs = get_account_liked_orgs(user_id)
+        disliked_orgs = get_account_disliked_orgs(user_id)
         if len(liked_orgs) == 0:
             return self.dataset.get_random_org_ids(num_orgs)
         org_descs = self.dataset.get_orgs_by_id(liked_orgs, only_desc=True)
         num_to_drop = len(org_descs)
         org_vecs = self.vs.transform(org_descs)
         centroid = np.mean(org_vecs, axis=0)
-        num_to_fetch = num_orgs + num_to_drop
-        df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
-        return df.loc[~df['orgId'].isin(liked_orgs)]['orgId'].to_numpy()
+        if len(disliked_orgs) >= 1:
+            disliked_org_descs = self.dataset.get_orgs_by_id(disliked_orgs, only_desc=True)
+            num_to_drop += len(disliked_orgs)
+            disliked_org_vecs = self.vs.transform(disliked_org_descs)
+            dis_centroid = np.mean(disliked_org_vecs, axis=0)
+            centroid -= dis_centroid
+            num_to_fetch = num_orgs + num_to_drop
+            df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
+            df = df.loc[~df['orgId'].isin(liked_orgs)]
+            return df.loc[~df['orgId'].isin(disliked_orgs)]#['orgId'].to_numpy()
+        else:
+            num_to_fetch = num_orgs + num_to_drop
+            df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
+            return df.loc[~df['orgId'].isin(liked_orgs)]#['orgId'].to_numpy()
