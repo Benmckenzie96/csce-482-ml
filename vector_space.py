@@ -16,6 +16,13 @@ import pickle
 
 class VectorSpace:
 
+    """
+    Attributes:
+        data_centroid (array): Centroid of all the vectorized
+            data. This can be used for default recommendations
+            if no data is provided.
+    """
+
     def __init__(self, data, analyzer='word', stop_words='english',
             ngram_range=(1,1), max_df=1.0, min_df=1, max_features=None):
         """Initializes a VectorSpace instance. The vector space is fit on
@@ -67,6 +74,7 @@ class VectorSpace:
             ngram_range=ngram_range, max_df=max_df, min_df=min_df, max_features=max_features)\
             .fit(self.data.get_org_descriptions())
         self._transformed_data = self.vectorizer.transform(self.data.get_org_descriptions())
+        self.data_centroid = np.mean(self._transformed_data, axis=0)
 
     def info(self):
         """Returns a string containing the information of

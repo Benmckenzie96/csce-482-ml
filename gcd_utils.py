@@ -62,3 +62,23 @@ def get_account_disliked_orgs(account_id):
         raise ValueError('More or less than 1 user returned.'
             ' Something went wrong.')
     return results[0]['userDislikeOrgsId']
+
+def get_account_liked_tags(account_id):
+    """Fetches the tags that the user
+    is interested in.
+
+    Args:
+        account_id (str): The id of the user to
+            fetch tags for.
+
+    Returns:
+        A python list of strings. Each entry is a
+        tag that the user is interested in
+    """
+    query = client.query(kind='account')
+    query.add_filter('userId', '=', account_id)
+    results = list(query.fetch())
+    if len(results) != 1:
+        raise ValueError('More or less than 1 user returned.'
+            ' Something went wrong.')
+    return results[0]['userInterestTags']
