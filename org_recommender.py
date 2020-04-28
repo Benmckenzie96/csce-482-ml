@@ -61,11 +61,19 @@ class OrgRecommender:
             num_to_fetch = num_orgs + num_to_drop
             df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
             df = df.loc[~df['orgId'].isin(liked_orgs)]
-            return df.loc[~df['orgId'].isin(disliked_orgs)]['orgId'].to_numpy()
+            return_arr = df.loc[~df['orgId'].isin(disliked_orgs)]['orgId'].to_numpy()
+            if len(return_arr) >= num_orgs:
+                return return_arr[0:num_orgs]
+            else:
+                return return_arr
         else:
             num_to_fetch = num_orgs + num_to_drop
             df = self.vs.get_nearest_orgs(centroid, num_to_fetch)
-            return df.loc[~df['orgId'].isin(liked_orgs)]['orgId'].to_numpy()
+            return_arr = df.loc[~df['orgId'].isin(disliked_orgs)]['orgId'].to_numpy()
+            if len(return_arr) >= num_orgs:
+                return return_arr[0:num_orgs]
+            else:
+                return return_arr
 
     def centroid_recommend(self, centroid, num_orgs):
         """Provides organization recommendations based off
@@ -83,4 +91,4 @@ class OrgRecommender:
             a list of strings, each entry is an org id.
         """
         df = self.vs.get_nearest_orgs(centroid, num_orgs)
-        return df#['orgId'].to_numpy()
+        return df['orgId'].to_numpy()
