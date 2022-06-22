@@ -27,7 +27,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.1
 joblib==0.14.1
 MarkupSafe==1.1.1
-numpy==1.18.2
+numpy==1.22.0
 pandas==1.0.3
 promise==2.3
 protobuf==3.11.3
